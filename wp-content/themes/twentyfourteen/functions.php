@@ -492,6 +492,20 @@ function twentyfourteen_wp_title( $title, $sep ) {
 }
 add_filter( 'wp_title', 'twentyfourteen_wp_title', 10, 2 );
 
+function thumbs_rating_print($content)
+{
+	if(function_exists('thumbs_rating_getlink'))
+	{
+		return $content.thumbs_rating_getlink();
+	}
+	else
+	{
+		return $content;
+	}
+}
+add_filter('the_content', 'thumbs_rating_print');
+
+
 // Implement Custom Header features.
 require get_template_directory() . '/inc/custom-header.php';
 
