@@ -44,7 +44,24 @@ class JSON_API_Core_Controller {
       );
     }
   }
-  
+  public function like_post(){
+	global $json_api;
+	$post_ID  = $json_api->query->id;
+	$meta_name  = '_thumbs_rating_up';
+
+               $thumbs_rating_count = get_post_meta($post_ID, $meta_name, true) != '' ? get_post_meta($post_ID, $meta_name, true) : '0';
+                $thumbs_rating_count = $thumbs_rating_count + 1;
+
+                // Update the meta value
+
+                update_post_meta($post_ID, $meta_name, $thumbs_rating_count);
+
+        return array(
+
+		'vote' => get_post_meta($post_ID, '_thumbs_rating_up', true) != '' ? get_post_meta($post_ID, '_thumbs_rating_up', true) : '0'
+	);
+
+  } 
   public function get_recent_posts() {
     global $json_api;
     $posts = $json_api->introspector->get_posts();
