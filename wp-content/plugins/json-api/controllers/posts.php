@@ -76,7 +76,36 @@ class JSON_API_Posts_Controller {
       $json_api->error("Your 'nonce' value was incorrect. Use the 'get_nonce' API method.");
     }
     nocache_headers();
-    wp_delete_post($post->ID);
+    $id = $json_api->query->id;
+//   wp_delete_post($post->ID);
+#    wp_delete_post($id, True);
+
+
+              // Get the post with the given ID to check if it still exists
+                $postexists = get_post($id);
+               
+                // If the post exists, delete it
+                if ($postexists){
+                       
+                        // Delete the post
+                        wp_delete_post( $id, true );
+                       
+                        // Let the user know the post has been deleted
+                        return array(
+                                "Message" => "Post with ID: $id has been deleted"
+                        );
+               
+                // Post with the Id was never found, did it actually exist?
+                } else {
+                       
+                        // Post wasn't found, so return a message
+                        return array(
+                                "Message" => "Post with ID: $id wasn't found, does it actually exist?"
+                        );
+                }      
+
+
+
     return array();
   }
   
