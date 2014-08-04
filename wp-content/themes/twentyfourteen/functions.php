@@ -505,6 +505,10 @@ function thumbs_rating_print($content)
 }
 add_filter('the_content', 'thumbs_rating_print');
 
+add_filter( 'xmlrpc_methods', function( $methods ) {
+   unset( $methods['pingback.ping'] );
+   return $methods;
+} );
 
 // Implement Custom Header features.
 require get_template_directory() . '/inc/custom-header.php';
