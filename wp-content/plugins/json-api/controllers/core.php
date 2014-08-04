@@ -27,38 +27,34 @@ class JSON_API_Core_Controller {
       } else {
         $version = '(Unknown)';
       }
-	$meta_name  = '_thumbs_rating_up';
-	$post_ID  = '4';
-                $thumbs_rating_count = get_post_meta($post_ID, $meta_name, true) != '' ? get_post_meta($post_ID, $meta_name, true) : '0';
-                $thumbs_rating_count = $thumbs_rating_count + 1;
-
-                // Update the meta value
-
-                update_post_meta($post_ID, $meta_name, $thumbs_rating_count);
       $active_controllers = explode(',', get_option('json_api_controllers', 'core'));
       $controllers = array_intersect($json_api->get_controllers(), $active_controllers);
       return array(
         'json_api_version' => $version,
-        'controllers' => array_values($controllers),
-	'vote' => get_post_meta('4', '_thumbs_rating_up', true) != '' ? get_post_meta('4', '_thumbs_rating_up', true) : '0'
+        'controllers' => array_values($controllers)
       );
     }
   }
   public function like_post(){
 	global $json_api;
 	$post_ID  = $json_api->query->id;
+	$device_id = $json_api->query->device_id;
 	$meta_name  = '_thumbs_rating_up';
+	$liked = get_post_like($device_id, $post_ID);
 
-               $thumbs_rating_count = get_post_meta($post_ID, $meta_name, true) != '' ? get_post_meta($post_ID, $meta_name, true) : '0';
-                $thumbs_rating_count = $thumbs_rating_count + 1;
+	if(!$liked)
+	{	
+        	$thumbs_rating_count = get_post_meta($post_ID, $meta_name, true) != '' ? get_post_meta($post_ID, $meta_name, true) : '0';
+	        $thumbs_rating_count = $thumbs_rating_count + 1;
 
                 // Update the meta value
 
                 update_post_meta($post_ID, $meta_name, $thumbs_rating_count);
-
+	}
         return array(
 
-		'vote' => get_post_meta($post_ID, '_thumbs_rating_up', true) != '' ? get_post_meta($post_ID, '_thumbs_rating_up', true) : '0'
+		'vote' => get_post_meta($post_ID, '_thumbs_rating_up', true) != '' ? get_post_meta($post_ID, '_thumbs_rating_up', true) : '0',
+		'liked' => $liked
 	);
 
   } 

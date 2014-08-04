@@ -5683,3 +5683,20 @@ function _prime_post_caches( $ids, $update_term_cache = true, $update_meta_cache
 		update_post_caches( $fresh_posts, 'any', $update_term_cache, $update_meta_cache );
 	}
 }
+
+
+
+function get_post_like($device_id, $post_id)
+{
+
+	global $wpdb;
+	$query = "select like_post_id from device where device_id = '{$device_id}'";
+	$ids = $wpdb->get_results($query);
+	$id = explode(",", $ids[0]->like_post_id);
+	if(in_array($post_id, $id) )
+		return true;
+	else 
+		return false;
+#	return $ids[0]['like_post_id'];
+	//return $post_id;
+}
