@@ -5694,9 +5694,77 @@ function get_post_like($device_id, $post_id)
 	$ids = $wpdb->get_results($query);
 	$id = explode(",", $ids[0]->like_post_id);
 	if(in_array($post_id, $id) )
-		return true;
+		return "1";
 	else 
-		return false;
+
+		return "0";
 #	return $ids[0]['like_post_id'];
 	//return $post_id;
 }
+
+
+
+function update_like_count($image_id)
+
+{
+	global $wpdb;
+	$query = "select like_count from wp_bwg_image where id = {$image_id} ";
+        $result1 = ($wpdb->get_results($query));
+	$count = $result1[0]->like_count + 1;
+        $query = "update wp_bwg_image set like_count = {$count} where id = {$image_id}";
+	$wpdb->get_results($query);
+	return 1;
+
+}
+
+function get_post_image($tag)
+{
+
+	global $wpdb;
+	$q = "select image_id from wp_bwg_image_tag where tag_id = {$tag}";
+	$query1 = "select name from wp_terms where term_id = {$tag}";
+
+	$result1 = $wpdb->get_results($query1);
+        $query2 = "select gallery_id, date, image_url, like_count from wp_bwg_image where id in ({$q}) ";
+	$result = $wpdb->get_results($query2);
+        $query3 = "select name from wp_bwg_gallery where id = {$result[0]->gallery_id}";
+
+        $result3 = $wpdb->get_results($query3);
+
+	#return $query2;
+	return array(
+		'image' => $result,
+		'tag' => $result1[0]->name,
+		'public' =>$result3[0]->name);
+
+	
+
+}
+
+
+
+
+
+function update_post_like($device_id, $post_id)
+{
+
+        global $wpdb;
+        $query = "select like_post_id from device where device_id = '{$device_id}'";
+        $ids = $wpdb->get_results($query);
+//	return $ids[0]->like_post_id;
+	$s = "";
+	if($ids == null)
+	{
+		$s = $post_id;
+		$query = "insert device set  device_id ='{$device_id}' ,  like_post_id = '$s'";
+	}
+	else
+	{
+		$s = $ids[0]->like_post_id.",".$post_id;
+      		 $query = "update device set  like_post_id  = '{$s}' where device_id = '{$device_id}'";
+      	}
+	$ids = $wpdb->get_results($query);
+	return $query;
+}
+
+
