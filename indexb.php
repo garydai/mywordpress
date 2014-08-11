@@ -11,7 +11,12 @@
  *
  * @var bool
  */
-define('WP_USE_THEMES', true);
-
+//define('WP_USE_THEMES', true);
+//phpinfo();
+//return 1
+echo $_FILES['test']['name'];
+echo "hello\n";
+echo $_SERVER['REQUEST_METHOD'];
+echo $_POST["test2"];
 /** Loads the WordPress Environment and Template */
-require( dirname( __FILE__ ) . '/wp-blog-header.php' );
+//require( dirname( __FILE__ ) . '/wp-blog-header.php' );

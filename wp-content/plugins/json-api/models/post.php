@@ -34,6 +34,7 @@ class JSON_API_Post {
   }
   
   function create($values = null) {
+	return $values;
     unset($values['id']);
     if (empty($values) || empty($values['title'])) {
       $values = array(

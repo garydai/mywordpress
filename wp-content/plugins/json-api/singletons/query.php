@@ -21,6 +21,8 @@ class JSON_API_Query {
       }
       return $result;
     }
+    //$query_var = (isset($_POST[$key])) ? $_POST[$key] : null;
+ 
     $query_var = (isset($_REQUEST[$key])) ? $_REQUEST[$key] : null;
     $wp_query_var = $this->wp_query_var($key);
     if ($wp_query_var) {

@@ -5685,7 +5685,7 @@ function _prime_post_caches( $ids, $update_term_cache = true, $update_meta_cache
 }
 
 
-
+//获取用户点赞个数
 function get_post_like($device_id, $post_id)
 {
 
@@ -5693,6 +5693,7 @@ function get_post_like($device_id, $post_id)
 	$query = "select like_post_id from device where device_id = '{$device_id}'";
 	$ids = $wpdb->get_results($query);
 	$id = explode(",", $ids[0]->like_post_id);
+	//return $post_id;
 	if(in_array($post_id, $id) )
 		return "1";
 	else 
@@ -5703,6 +5704,7 @@ function get_post_like($device_id, $post_id)
 }
 
 
+//更新图片点赞个数
 
 function update_like_count($image_id)
 
@@ -5717,7 +5719,8 @@ function update_like_count($image_id)
 
 }
 
-function get_post_image($tag)
+//获取图片
+function get_post_image($tag, $page, $count, $device_id)
 {
 
 	global $wpdb;
@@ -5725,17 +5728,42 @@ function get_post_image($tag)
 	$query1 = "select name from wp_terms where term_id = {$tag}";
 
 	$result1 = $wpdb->get_results($query1);
-        $query2 = "select gallery_id, date, image_url, like_count from wp_bwg_image where id in ({$q}) ";
+	$page*=$count;
+        $query2 = "select id,  slug, user_like,  gallery_id, date, image_url, like_count from wp_bwg_image where id in ({$q}) ORDER BY date DESC, gallery_id LIMIT {$page}, {$count}";
 	$result = $wpdb->get_results($query2);
         $query3 = "select name from wp_bwg_gallery where id = {$result[0]->gallery_id}";
 
         $result3 = $wpdb->get_results($query3);
-
-	#return $query2;
+	$query4 = "select like_post_id from device where device_id = '{$device_id}'";
+        $ids = $wpdb->get_results($query4);
+	foreach($result as &$json)
+	{
+	//	return $json->id;
+		$id = $json->gallery_id;
+	        $query1 = "select name from wp_bwg_gallery where id = {$id}";
+	        $result3 = $wpdb->get_results($query1);
+		$json->slug  = $result3[0]->name;
+		$date = $json->date;
+		$arr = explode(",", $date);
+//		return  $json->id;
+		$like_arr = explode(",", $ids[0]->like_post_id);
+		if(in_array($json->id, $like_arr) )
+		{
+			$json->user_like = 1;
+		}
+		else
+		{	
+			$json->user_like = 0;
+		}
+		$json->date = $arr[0];	
+	}
+		
+	//print $obj->{'foo-bar'}; // 12345
 	return array(
 		'image' => $result,
-		'tag' => $result1[0]->name,
-		'public' =>$result3[0]->name);
+		'tag' => $result1[0]->name
+		);
+
 
 	
 
@@ -5743,7 +5771,7 @@ function get_post_image($tag)
 
 
 
-
+//更新用户点赞记录
 
 function update_post_like($device_id, $post_id)
 {
@@ -5767,4 +5795,51 @@ function update_post_like($device_id, $post_id)
 	return $query;
 }
 
+//获取用户点赞图片
+
+function _get_like_image($device_id)
+{
+
+        global $wpdb;
+        $query = "select like_post_id from device where device_id = '{$device_id}'";
+        $ids = $wpdb->get_results($query);
+//      return $ids[0]->like_post_id;
+        $s = "";
+        if($ids == null)
+        {
+		return array(
+				"result" => "no like image"
+				);
+        }
+        else
+        {
+
+		$id = explode(",", $ids[0]->like_post_id);
+		$query = "select gallery_id, date, image_url, like_count from wp_bwg_image where id in ( {$ids[0]->like_post_id}) ORDER BY date DESC";
+		return	array(
+				"image" => $wpdb->get_results($query)
+				);
+
+			
+        }
+}
+
+//注册
+function _register($device_id, $id, $password)
+{
+
+	
+        global $wpdb;
+	$query = "select * from user where user =  '{$id}' ";
+	$result = $wpdb->get_results($query);
+	if($result != null)
+	{
+		return false;
+	}
+
+        $query = "insert user set user = '{$id}', password = '{$password}' , device_id = '{$device_id}' ";
+//	return $query;
+        $wpdb->get_results($query);
+	return true;
+}
 

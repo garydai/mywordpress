@@ -56,6 +56,13 @@ class JSON_API_Core_Controller {
         );
 
   }
+  public function get_like_image(){
+        global $json_api;
+        $device_id = $json_api->query->device_id;
+//	return $json_api->query->device_id;
+        return  _get_like_image($device_id);
+
+  }
 
 
 //点赞
@@ -89,12 +96,30 @@ class JSON_API_Core_Controller {
   {
 	global $json_api;
         $device_id = $json_api->query->device_id;
-	$tag = $json_api->query->tag;
-	return  get_post_image($tag);
+	$tag 	   = $json_api->query->tag;
+	$page      = $json_api->query->page;
+	$count     = $json_api->query->sum;
+	
+	return  get_post_image($tag, $page, $count, $device_id);
 	
 
 	
   }
+
+
+  public function register()
+  {
+        global $json_api;
+        $device_id = $json_api->query->device_id;
+        $id        = $json_api->query->id;
+        $password  = $json_api->query->password;
+        return  _register($device_id, $id, $password);
+	
+
+  }
+
+
+
  
   public function get_recent_posts() {
     global $json_api;
