@@ -29,19 +29,23 @@ class JSON_API_Post {
   function JSON_API_Post($wp_post = null) {
     if (!empty($wp_post)) {
       $this->import_wp_object($wp_post);
+
     }
+//	return $this->type;
     do_action("json_api_{$this->type}_constructor", $this);
   }
   
   function create($values = null) {
-	return $values;
+//	echo $values['content'];
     unset($values['id']);
     if (empty($values) || empty($values['title'])) {
       $values = array(
         'title' => 'Untitled',
-        'content' => ''
+        'content' => $values['content']
       );
     }
+//	echo $values['content'];
+//	echo 1111;
     return $this->save($values);
   }
   
@@ -119,10 +123,10 @@ class JSON_API_Post {
       $this->attachments[] = new JSON_API_Attachment($attachment_id);
       unset($_FILES['attachment']);
     }
-    
+   	echo $this->date; 
     $wp_post = get_post($this->id);
     $this->import_wp_object($wp_post);
-    
+   echo $this->date; 
     return $this->id;
   }
   

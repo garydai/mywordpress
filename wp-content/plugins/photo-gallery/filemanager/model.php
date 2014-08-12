@@ -151,7 +151,7 @@ class FilemanagerModel {
           // $file_size_mb = (int)($file_size_kb / 1024);
           // $file['size'] = $file_size_kb < 1024 ? (string)$file_size_kb . 'KB' : (string)$file_size_mb . 'MB';
           $file['size'] = $file_size_kb . ' KB';
-          $file['date_modified'] = date('d F Y, H:i', filemtime($parent_dir . '/' . $file_name));
+          $file['date_modified'] = date('Y-m-d H:i:s', filemtime($parent_dir . '/' . $file_name));
           $image_info = getimagesize(htmlspecialchars_decode($parent_dir . '/' . $file_name, ENT_COMPAT | ENT_QUOTES));
           $file['resolution'] = $this->is_img($file['type']) ? $image_info[0]  . ' x ' . $image_info[1] . ' px' : '';
           $files[] = $file;
@@ -197,7 +197,7 @@ class FilemanagerModel {
           $file_size_kb = (int)(@filesize($parent_dir . '/' . $file_meta['file']) / 1024);
           if (!$file_size_kb) continue;
           $file['size'] = $file_size_kb . ' KB';
-          $file['date_modified'] = date('d F Y, H:i', filemtime($parent_dir . '/' . $file_meta['file']));
+          $file['date_modified'] = date('Y-m-d H:i:s', filemtime($parent_dir . '/' . $file_meta['file']));
           $image_info = getimagesize(htmlspecialchars_decode($parent_dir . '/' . $file_meta['file'], ENT_COMPAT | ENT_QUOTES));
           $file['resolution'] = $this->is_img($file['type']) ? $image_info[0]  . ' x ' . $image_info[1] . ' px' : '';
           $files[] = $file;
