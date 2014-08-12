@@ -114,7 +114,6 @@ class JSON_API_Post {
     } else {
       $this->id = wp_insert_post($wp_values);
     }
-    
     if (!empty($_FILES['attachment'])) {
       include_once ABSPATH . '/wp-admin/includes/file.php';
       include_once ABSPATH . '/wp-admin/includes/media.php';
@@ -123,10 +122,8 @@ class JSON_API_Post {
       $this->attachments[] = new JSON_API_Attachment($attachment_id);
       unset($_FILES['attachment']);
     }
-   	echo $this->date; 
     $wp_post = get_post($this->id);
     $this->import_wp_object($wp_post);
-   echo $this->date; 
     return $this->id;
   }
   
