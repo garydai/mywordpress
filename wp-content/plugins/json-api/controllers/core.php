@@ -118,7 +118,11 @@ class JSON_API_Core_Controller {
 
   }
 
+  public function get_album()
+  {
+	return  _get_album();
 
+  }
 
  
   public function get_recent_posts() {

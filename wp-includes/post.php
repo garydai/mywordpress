@@ -5778,19 +5778,7 @@ function update_post_like($device_id, $post_id)
 
         global $wpdb;
         $query = "select like_post_id from device where device_id = '{$device_id}'";
-        $ids = $wpdb->get_results($query);
-//	return $ids[0]->like_post_id;
-	$s = "";
-	if($ids == null)
-	{
-		$s = $post_id;
-		$query = "insert device set  device_id ='{$device_id}' ,  like_post_id = '$s'";
-	}
-	else
-	{
-		$s = $ids[0]->like_post_id.",".$post_id;
-      		 $query = "update device set  like_post_id  = '{$s}' where device_id = '{$device_id}'";
-      	}
+	$query = "insert device set  device_id ='{$device_id}' ,  like_post_id = '$post_id'";
 	$ids = $wpdb->get_results($query);
 	return $query;
 }
@@ -5801,29 +5789,51 @@ function _get_like_image($device_id)
 {
 
         global $wpdb;
-        $query = "select like_post_id from device where device_id = '{$device_id}'";
-        $ids = $wpdb->get_results($query);
+        $query1 = "select like_post_id from device where device_id = '{$device_id}'";
+    //    $ids = $wpdb->get_results($query1);
 //      return $ids[0]->like_post_id;
-        $s = "";
-        if($ids == null)
-        {
-		return array(
-				"result" => "no like image"
-				);
-        }
-        else
-        {
+      //  $s = "";
+        //if($ids == null)
+        //{
+	//	return array(
+	//			"result" => "no like image"
+	//			);
+//        }
+  //      else
+    //    {
 
-		$id = explode(",", $ids[0]->like_post_id);
-		$query = "select gallery_id, date, image_url, like_count from wp_bwg_image where id in ( {$ids[0]->like_post_id}) ORDER BY date DESC";
+	//	$id = explode(",", $ids[0]->like_post_id);
+		$query = "select gallery_id, date, image_url, like_count from wp_bwg_image where id in ( {$query1}) ORDER BY date DESC";
+//		return $query;
 		return	array(
 				"image" => $wpdb->get_results($query)
 				);
 
 			
-        }
+      //  }
 }
 
+function _get_album()
+{
+
+	global $wpdb;
+	$q = "select alb_gal_id from wp_bwg_album_gallery";
+	$result = $wpdb->get_results($q);
+	$arr = array();
+	foreach($result as $json)
+	{
+		$query2 = "select id,  slug, user_like,  gallery_id, date, image_url, like_count from wp_bwg_image where gallery_id = {$json->alb_gal_id}" ;
+		$result2 = $wpdb->get_results($query2);
+		array_push($arr, $result2);
+	
+	}
+//	return $arr;
+                return  array(
+                                "image" => $arr
+                                );
+
+	
+}
 //注册
 function _register($device_id, $id, $password)
 {
