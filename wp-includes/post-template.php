@@ -208,9 +208,20 @@ function the_content( $more_link_text = null, $strip_teaser = false) {
 	 *
 	 * @param string $content Content of the current post.
 	 */
+//	echo $content;
+//	echo 111111111111111111;
 	$content = apply_filters( 'the_content', $content );
+//	echo $content;
+//	echo 222222222222222222222;
 	$content = str_replace( ']]>', ']]&gt;', $content );
-	echo $content;
+	//echo $content;
+//	echo 3333333333333333333333333333333;
+//	echo $content;
+//	echo 1111111111111111111111111111111;
+//	echo 222222222222222222222222222222222;
+
+
+
 }
 
 /**

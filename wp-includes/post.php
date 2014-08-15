@@ -5692,11 +5692,13 @@ function get_post_like($device_id, $post_id)
 	global $wpdb;
 	$query = "select like_post_id from device where device_id = '{$device_id}'";
 	$ids = $wpdb->get_results($query);
-	$id = explode(",", $ids[0]->like_post_id);
+//	$id = explode(",", $ids[0]->like_post_id);
 	//return $post_id;
-	if(in_array($post_id, $id) )
-		return "1";
-	else 
+	foreach($ids as $id)
+	{
+		if($id->like_post_id == $post_id)
+			return "1";
+	}
 
 		return "0";
 #	return $ids[0]['like_post_id'];
@@ -5747,14 +5749,15 @@ function get_post_image($tag, $page, $count, $device_id)
 		$arr = explode(",", $date);
 //		return  $json->id;
 		$like_arr = explode(",", $ids[0]->like_post_id);
-		if(in_array($json->id, $like_arr) )
-		{
-			$json->user_like = 1;
-		}
-		else
-		{	
-			$json->user_like = 0;
-		}
+
+		$json->user_like = 0;
+	        foreach($ids as $item)
+       		{
+               		if($item->like_post_id == $json->id)
+				$json->user_like = 1;
+        	}
+		
+
 		$json->date = $arr[0];	
 	}
 		
@@ -5822,7 +5825,7 @@ function _get_album()
 	$arr = array();
 	foreach($result as $json)
 	{
-		$query2 = "select id,  slug, user_like,  gallery_id, date, image_url, like_count from wp_bwg_image where gallery_id = {$json->alb_gal_id}" ;
+		$query2 = "select id, description, slug, user_like,  gallery_id, date, image_url, like_count from wp_bwg_image where gallery_id = {$json->alb_gal_id}" ;
 		$result2 = $wpdb->get_results($query2);
 		array_push($arr, $result2);
 	
@@ -5834,22 +5837,83 @@ function _get_album()
 
 	
 }
+
+function _get_category_posts($cagetory)
+{
+	global $wpdb;
+	$query = "select term_id from wp_terms where slug =  '{$cagetory}'";
+	$result = $wpdb->get_results($query);
+	//echo $query;
+	if($result != null)
+	{
+		$term_id = $result[0]->term_id;
+		$query = "select term_taxonomy_id  from wp_term_taxonomy where term_id =  {$term_id}";
+	//	echo $query;
+	        $result = $wpdb->get_results($query);
+       		if($result != null)
+       		{
+        		$term_taxonomy_id = $result[0]->term_taxonomy_id;
+	                $query = "select object_id  from wp_term_relationships where term_taxonomy_id =  {$term_taxonomy_id}";
+	                $query2 = "select post_content, post_title, post_date, id from wp_posts  where id in ({$query})";
+	//		echo $query2;
+			$result = $wpdb->get_results($query2);
+
+			return $result;
+
+        	}
+
+	}
+	return null;
+
+}
 //注册
-function _register($device_id, $id, $password)
+function _register($device_id, $user, $email, $password)
 {
 
 	
         global $wpdb;
-	$query = "select * from user where user =  '{$id}' ";
+	$query = "select * from user where user =  '{$user}' ";
 	$result = $wpdb->get_results($query);
 	if($result != null)
 	{
-		return false;
+		return (array ('result' => '0'));
 	}
-
-        $query = "insert user set user = '{$id}', password = '{$password}' , device_id = '{$device_id}' ";
+        $query = "insert user set user = '{$user}', password = '{$password}' , device_id = '{$device_id}' , email = '{$email}'";
 //	return $query;
         $wpdb->get_results($query);
-	return true;
+
+        $query = "select * from user where user =  '{$user}' ";
+        $result = $wpdb->get_results($query);
+        if($result != null)
+        {
+                return (array ('result' => '1'));
+        }
+	else
+	return (array ('result' => '0'));
 }
+
+//登陆
+function _login($device_id, $user, $password)
+{
+	global $wpdb;
+	$query = "select id from user where user = '{$user}' and password = '{$password}'";
+//	echo $query;
+
+	$result = $wpdb->get_results($query);
+	if($result != null)
+	{
+		return array ('result' => '1');
+	}
+	else return array('result' => '0');
+
+}
+
+
+
+
+
+
+
+
+
 

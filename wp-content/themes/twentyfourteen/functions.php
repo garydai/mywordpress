@@ -532,8 +532,15 @@ if ( ! class_exists( 'Featured_Content' ) && 'plugins.php' !== $GLOBALS['pagenow
 
 
 
+
+
 // display user-submitted images
 function usp_display_images() {
+
+//$content =  get_the_content();
+
+//$content = str_replace( ']]>', ']]&gt;', $content );
+//echo $content;
 global $post;
 $args = array('order'=>'ASC', 'post_type'=>'attachment', 'post_parent'=>$post->ID, 'post_mime_type'=>'image', 'post_status'=>null);
 $items = get_posts($args); ?>
@@ -550,5 +557,10 @@ echo '<span class="usp-author-link">Posted by <a href="' . $url . '">' . $author
 } ?>
 </div>
 <?php }
-add_filter('the_content', 'usp_display_images');
+
+function _display_images($content)
+{
+	return $content.usp_display_images();
+}
+add_filter('the_content', '_display_images');
 

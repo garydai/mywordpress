@@ -3414,7 +3414,7 @@ class WP_Query {
 			$this->post_count = 0;
 			$this->posts = array();
 		}
-
+		//echo $this->posts[0]->post_content;
 		return $this->posts;
 	}
 
@@ -4378,8 +4378,10 @@ function setup_postdata( $post ) {
 		if ( $numpages > 1 )
 			$multipage = 1;
 	} else {
+		
 		$pages = array( $post->post_content );
 	}
+//	echo $content;
 
 	/**
 	 * Fires once the post data has been setup.

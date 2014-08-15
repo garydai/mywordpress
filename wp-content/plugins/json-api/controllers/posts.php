@@ -23,8 +23,6 @@ class JSON_API_Posts_Controller {
 
 */
     nocache_headers();
-
-    echo $_REQUEST;
     $post = new JSON_API_Post();
     $id = $post->create($_REQUEST);
     if (empty($id)) {

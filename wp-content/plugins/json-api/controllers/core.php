@@ -37,6 +37,36 @@ class JSON_API_Core_Controller {
   }
 
 
+  public function my_get_category_posts()
+ {
+	
+	global $json_api;
+
+//	echo 2;
+	$category = $json_api->query->category;
+	$result = _get_category_posts($category);
+//	echo 2;
+        foreach($result as &$json)
+        {
+		$json->post_content =  $this->get_content_value($json->post_content);
+	}
+	return array("result" => $result);
+
+
+}
+ public  function get_content_value($content) {
+	
+ //     $content1 = apply_filters('the_content', $content);
+	
+      $content1 = str_replace(']]>', ']]&gt;', $content);
+	$content1 = str_replace("\r\n", '<br>', $content1);
+	
+//	$content1 ="<pre>".$content."</pre>"; 
+	return $content1;
+    
+  }
+
+ 
   public function like_image(){
         global $json_api;
         $post_ID  = $json_api->query->id;
@@ -111,12 +141,23 @@ class JSON_API_Core_Controller {
   {
         global $json_api;
         $device_id = $json_api->query->device_id;
-        $id        = $json_api->query->id;
-        $password  = $json_api->query->password;
-        return  _register($device_id, $id, $password);
+        $id        = $json_api->query->user;
+        $password  = $json_api->query->pwd;
+	$email     = $json_api->query->email;
+        return  _register($device_id, $id, $email, $password);
 	
 
   }
+
+  public function login()
+  {
+	global $json_api;
+	$device_id = $json_api->query->device_id;
+	$user      = $json_api->query->user;
+	$pwd       = $json_api->query->pwd;
+	return _login($device_id, $user, $pwd);
+  }
+
 
   public function get_album()
   {

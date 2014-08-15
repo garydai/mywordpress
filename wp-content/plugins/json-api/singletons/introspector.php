@@ -6,10 +6,12 @@ class JSON_API_Introspector {
     global $post, $wp_query;
     $this->set_posts_query($query);
     $output = array();
+	
     while (have_posts()) {
       the_post();
       if ($wp_posts) {
         $new_post = $post;
+	
       } else {
         $new_post = new JSON_API_Post($post);
       }
