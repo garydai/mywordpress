@@ -8,8 +8,8 @@ class JSON_API_Posts_Controller {
 
   public function create_post() {
     global $json_api;
+/*	return 2;
 
-/*
     if (!current_user_can('edit_posts')) {
       $json_api->error("You need to login with a user that has 'edit_posts' capacity.");
     }
@@ -21,13 +21,22 @@ class JSON_API_Posts_Controller {
       $json_api->error("Your 'nonce' value was incorrect. Use the 'get_nonce' API method.");
     }
 
+
+	return 1;
 */
-    nocache_headers();
+   // nocache_headers();
     $post = new JSON_API_Post();
     $id = $post->create($_REQUEST);
     if (empty($id)) {
       $json_api->error("Could not create post.");
     }
+    //$post->update($_REQUEST);
+    global $wpdb;
+ //  echo  $_REQUEST['user'];
+
+    $query = "insert user_comment set user = {$_REQUEST['user']}, post_id = '{$id}', image_id = {$post->attachments[0]->id}, image_url = '{$post->attachments[0]->url}', showed = 0";
+   echo $query;
+	 $result = $wpdb->get_results($query);
     return array(
       'post' => $post
     );
@@ -52,6 +61,7 @@ class JSON_API_Posts_Controller {
     nocache_headers();
     $post = new JSON_API_Post($post);
     $post->update($_REQUEST);
+
     return array(
       'post' => $post
     );

@@ -1553,6 +1553,17 @@ function wp_insert_comment($commentdata) {
 
 	$comment = get_comment($id);
 
+	//将评价插入user_comment中
+	if($comment_author == 'test' && $comment_author_email == 'techang2009@126.com')
+	{
+		$query = "update user_comment set comment = '{$comment_content}' where post_id = {$comment_post_ID}";
+	//	echo $query;
+		$wpdb->get_results($query);
+		
+	}
+//	if($comment_author)	
+//	$query = "update user_comment set comment = 1 where post_id = {$comment_post_ID}";
+
 	/**
 	 * Fires immediately after a comment is inserted into the database.
 	 *

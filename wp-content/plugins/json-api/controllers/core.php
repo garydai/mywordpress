@@ -7,6 +7,7 @@ Controller description: Basic introspection methods
 class JSON_API_Core_Controller {
   
   public function info() {
+	echo 1;
     global $json_api;
     $php = '';
     if (!empty($json_api->query->controller)) {
@@ -37,8 +38,26 @@ class JSON_API_Core_Controller {
   }
 
 
+
+
+
+
+
+  public function get_comment()
+  {
+	
+	global $json_api;
+	$user = $json_api->query->user;
+	$device_id = $json_api->query->device_id;
+	
+	
+	return _get_comment($user, $device_id);
+
+
+	
+  }
   public function my_get_category_posts()
- {
+  {
 	
 	global $json_api;
 
@@ -53,7 +72,7 @@ class JSON_API_Core_Controller {
 	return array("result" => $result);
 
 
-}
+  }
  public  function get_content_value($content) {
 	
  //     $content1 = apply_filters('the_content', $content);
@@ -79,6 +98,11 @@ class JSON_API_Core_Controller {
                 update_like_count($post_ID);
                 $q = update_post_like($device_id, $post_ID);
         }
+	else
+	{
+		update_like_count_minus($post_ID);
+		
+	}
         return array(
 
                 'liked' => $liked,

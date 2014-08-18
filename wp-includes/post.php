@@ -5697,7 +5697,13 @@ function get_post_like($device_id, $post_id)
 	foreach($ids as $id)
 	{
 		if($id->like_post_id == $post_id)
+		{
+			$query = "delete from  device where like_post_id = $post_id";
+		//	echo $query;
+			$wpdb->get_results($query);
+			
 			return "1";
+		}
 	}
 
 		return "0";
@@ -5720,6 +5726,19 @@ function update_like_count($image_id)
 	return 1;
 
 }
+function update_like_count_minus($image_id)
+
+{
+        global $wpdb;
+        $query = "select like_count from wp_bwg_image where id = {$image_id} ";
+        $result1 = ($wpdb->get_results($query));
+        $count = $result1[0]->like_count - 1;
+        $query = "update wp_bwg_image set like_count = {$count} where id = {$image_id}";
+        $wpdb->get_results($query);
+        return 1;
+
+}
+
 
 //获取图片
 function get_post_image($tag, $page, $count, $device_id)
@@ -5746,7 +5765,7 @@ function get_post_image($tag, $page, $count, $device_id)
 	        $result3 = $wpdb->get_results($query1);
 		$json->slug  = $result3[0]->name;
 		$date = $json->date;
-		$arr = explode(",", $date);
+		$arr = explode(" ", $date);
 //		return  $json->id;
 		$like_arr = explode(",", $ids[0]->like_post_id);
 
@@ -5908,12 +5927,45 @@ function _login($device_id, $user, $password)
 
 }
 
-
-
-
-
-
-
+function _get_comment($user, $device_id)
+{
+	global $wpdb;
+	$query = "select * from user_comment  where user = '{$user}' order by id desc ";
+	$result = $wpdb->get_results($query);
+	
+	if($result != null)
+	{
+		$id = $result[0]->id;
+		//已经被用户看过
+		if($result[0]->showed == 1)
+		{
+			return array("result" => "0");
+		}
+		else
+		{
+		//	$query = "select * from wp_comments where comment_post_ID = {$result[0]->post_id} and comment_author = test and comment_author_email = techang2009@126.com";
+		//	$result1 = $wpdb->get_results($query);
+			//被评论过
+		//	if($result1)
+		//	{
+				
+		//		$query = "select * from user_comment where comment = 1 and id != {$id} LIMIT 5 ";	
+		//		$result2 = $wpdb->get_results($query);
+				
+		//		return array ("result" => "1", "comment" => "1", "image" => $result2)
+		//	}
+		//	else
+			{
+				
+				return array ("result" => "1", "comment" => "0",  "image" => $result[0]->image_url);
+			}
+		}
+	}
+	else
+	{	
+		return array("result" => "0");
+	}
+}
 
 
 
