@@ -34,7 +34,7 @@ class JSON_API_Posts_Controller {
     global $wpdb;
  //  echo  $_REQUEST['user'];
 
-    $query = "insert user_comment set user = {$_REQUEST['user']}, post_id = '{$id}', image_id = {$post->attachments[0]->id}, image_url = '{$post->attachments[0]->url}', showed = 0";
+    $query = "insert user_comment set user = '{$_REQUEST['user']}', post_id = {$id}, image_id = {$post->attachments[0]->id}, image_url = '{$post->attachments[0]->url}', showed = 0";
    echo $query;
 	 $result = $wpdb->get_results($query);
     return array(
