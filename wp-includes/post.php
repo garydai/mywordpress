@@ -5873,7 +5873,7 @@ function _get_category_posts($cagetory)
        		{
         		$term_taxonomy_id = $result[0]->term_taxonomy_id;
 	                $query = "select object_id  from wp_term_relationships where term_taxonomy_id =  {$term_taxonomy_id}";
-	                $query2 = "select post_content, post_title, post_date, id from wp_posts  where id in ({$query})";
+	                $query2 = "select post_content, post_title, post_date, id from wp_posts  where id in ({$query}) order by post_date desc ";
 	//		echo $query2;
 			$result = $wpdb->get_results($query2);
 
@@ -5946,15 +5946,15 @@ function _get_comment($user, $device_id)
 		//	$query = "select * from wp_comments where comment_post_ID = {$result[0]->post_id} and comment_author = test and comment_author_email = techang2009@126.com";
 		//	$result1 = $wpdb->get_results($query);
 			//被评论过
-		//	if($result1)
-		//	{
+			if($result[0]->comment)
+			{
 				
-		//		$query = "select * from user_comment where comment = 1 and id != {$id} LIMIT 5 ";	
-		//		$result2 = $wpdb->get_results($query);
-				
-		//		return array ("result" => "1", "comment" => "1", "image" => $result2)
-		//	}
-		//	else
+				$query = "select comment, image_url from user_comment where comment != ''  and id != {$id} LIMIT 5 ";	
+				$result2 = $wpdb->get_results($query);
+				array_push($result2, $result[0]);
+				return array ("result" => "1", "comment" => "1", "comment_content" => $result2);
+			}
+			else
 			{
 				
 				return array ("result" => "1", "comment" => "0",  "image" => $result[0]->image_url);

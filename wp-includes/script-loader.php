@@ -621,7 +621,7 @@ function wp_default_styles( &$styles ) {
 	// Common dependencies
 	$styles->add( 'buttons',   "/wp-includes/css/buttons$suffix.css" );
 	$styles->add( 'dashicons', "/wp-includes/css/dashicons$suffix.css" );
-	$styles->add( 'open-sans', "/wp-includes/fonts/fonts.css");
+	$styles->add( 'open-sans', $open_sans_font_url );
 
 	// Includes CSS
 	$styles->add( 'admin-bar',      "/wp-includes/css/admin-bar$suffix.css", array( 'open-sans', 'dashicons' ) );
@@ -635,7 +635,7 @@ function wp_default_styles( &$styles ) {
 	$styles->add( 'wp-jquery-ui-dialog', "/wp-includes/css/jquery-ui-dialog$suffix.css", array( 'dashicons' ) );
 	$styles->add( 'mediaelement',        "/wp-includes/js/mediaelement/mediaelementplayer.min.css", array(), '2.13.0' );
 	$styles->add( 'wp-mediaelement',     "/wp-includes/js/mediaelement/wp-mediaelement.css", array( 'mediaelement' ) );
-	$styles->add( 'thickbox',            '/wp-includes/js/thickbox/thickbox.css', array( 'dashicons' ), '20131201' );
+	$styles->add( 'thickbox',            '/wp-includes/js/thickbox/thickbox.css', array( 'dashicons' ) );
 
 	// Deprecated CSS
 	$styles->add( 'media',      "/wp-admin/css/deprecated-media$suffix.css" );

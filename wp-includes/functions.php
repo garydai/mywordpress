@@ -4444,7 +4444,3 @@ function mbstring_binary_safe_encoding( $reset = false ) {
 function reset_mbstring_encoding() {
 	mbstring_binary_safe_encoding( true );
 }
-
-
-
-

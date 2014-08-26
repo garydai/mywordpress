@@ -7,7 +7,6 @@ Controller description: Basic introspection methods
 class JSON_API_Core_Controller {
   
   public function info() {
-	echo 1;
     global $json_api;
     $php = '';
     if (!empty($json_api->query->controller)) {
@@ -40,7 +39,79 @@ class JSON_API_Core_Controller {
 
 
 
+  public function send_talk_topic()
+  {
+	global $wpdb;
+	global $json_api;
+	$user = $json_api->query->user;
+	$content = $json_api->query->content;
+	$date    = $json_api->query->date;
+	$title   = $json_api->query->title;
+	$query = "insert talk_topic set user = '{$user}', content = '{$content}', date = '{$date}', title='{$title}', lastUpdate = '{$date}'   ";
+	echo $query;
+	$wpdb->get_results($query);
+	return array('result' => 'success');
+	 
+			
+  }
 
+  public function get_talk_topic()
+  {
+
+        global $wpdb;
+        global $json_api;
+	//page 从1开始
+	$page    = $json_api->query->page;
+//	$page  -= 1;
+	$num	 = $json_api->query->num;
+	$page *= $num;
+        $query   = "select * from talk_topic order by lastUpdate desc LIMIT {$page},{$num}  ";
+//	echo $query;
+	$result = $wpdb->get_results($query);
+	return array("topic" => $result);
+
+
+
+  }
+
+	
+
+  public function send_talk_comment()
+  {
+        global $wpdb;
+        global $json_api;
+        $user = $json_api->query->user;
+        $content = $json_api->query->content;
+        $date    = $json_api->query->date;
+	$topic_id = $json_api->query->topic_id;
+        $query = "insert talk_comment set user = '{$user}', content = '{$content}', date = '{$date}', topic_id = {$topic_id}   ";
+        $wpdb->get_results($query);
+	$query = "update talk_topic set lastUpdate = '{$date}' where id = {$topic_id}";
+	$wpdb->get_results($query);
+	return array('result' => 'success');
+	
+
+  } 
+
+  public function get_talk_comment()
+  {
+
+        global $wpdb;
+        global $json_api;
+        $page    = $json_api->query->page;
+        $num     = $json_api->query->num;
+	$page *= $num;
+	$topic   = $json_api->query->topic_id;
+        $query   = "select * from talk_comment where topic_id = {$topic} order by date desc LIMIT {$page},{$num}  ";
+        $result = $wpdb->get_results($query);
+//	echo $query;
+	$query   = "update talk_topic set count = count + 1 where id = {$topic} ";
+	$wpdb->get_results($query);
+        return array("comment" => $result);
+
+
+
+  }
 
 
   public function get_comment()
@@ -153,7 +224,7 @@ class JSON_API_Core_Controller {
 	$tag 	   = $json_api->query->tag;
 	$page      = $json_api->query->page;
 	$count     = $json_api->query->sum;
-	
+	//echo $page;	
 	return  get_post_image($tag, $page, $count, $device_id);
 	
 

@@ -538,7 +538,6 @@ if ( ! class_exists( 'Featured_Content' ) && 'plugins.php' !== $GLOBALS['pagenow
 function usp_display_images() {
 
 //$content =  get_the_content();
-
 //$content = str_replace( ']]>', ']]&gt;', $content );
 //echo $content;
 global $post;
